@@ -1,6 +1,44 @@
 # DeepLinks
 
-The `DeepLinks` package provides various libraries for creating deep links in to apps.
+The `DeepLinks` package provides various libraries for creating deep links in to apps. Some apps are included with the package. For apps that aren't included in the package you can create your own deep link type using the `@DeepLink` macro.
+
+```swift
+@DeepLink
+public struct SearchDeepLink: DeepLink {
+    public static let scheme = "example"
+
+    @Host
+    private let host = "search"
+
+    @PathItem
+    public var category = "all"
+
+    @QueryItem(name: "q")
+    public var query: String
+
+    // @DeepLink macro adds this
+    public var url: URL {
+        var components = URLComponents()
+        components.scheme = Self.scheme
+        components.host = "\(self.host)"
+        components.path = "/\(self.category)"
+        let queryItems: [URLQueryItem] = [
+            URLQueryItem(name: "q", value: self.query)
+        ]
+        components.queryItems = queryItems
+        return components.url!
+    }
+}
+
+// exmaple://search/all?q=hello%20world
+SearchDeepLink(query: "hello world").url.absoluteString
+```
+
+## Supported Apps
+
+Want to add an app to the project? Please open a pull request!
+
+- Callsheet
 
 ## Generating Links
 
@@ -15,6 +53,13 @@ $ swift run --repl
 Welcome to Apple Swift version 5.9 (swiftlang-5.9.0.128.2 clang-1500.0.40.1).
 Type :help for assistance.
   1> import CallsheetDeepLink
-  2> CallsheetDeepLink.activateInput.url
+  2> ActivateInput().url
 $R0: Foundation.URL = "callsheet://activateInput"
 ```
+
+## Future Direction
+
+- Support for more apps
+- Generate an initialiser the parses a `URL`
+- Add metadata for external tools to read
+  - Could enable creating a tool for generating and testing deep links
