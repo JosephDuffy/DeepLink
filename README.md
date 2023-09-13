@@ -1,6 +1,6 @@
 # DeepLinks
 
-The `DeepLinks` package provides various libraries for creating deep links in to apps. Some apps are included with the package. For apps that aren't included in the package you can create your own deep link type using the `@DeepLink` macro.
+The `DeepLinks` package enables easily creating type-safe deep links. Deep links for some apps are included with the package. For apps that aren't included custom deep link types can be created using the `@DeepLink` macro.
 
 ```swift
 @DeepLink
@@ -30,7 +30,7 @@ public struct SearchDeepLink: DeepLink {
     }
 }
 
-// exmaple://search/all?q=hello%20world
+// example://search/all?q=hello%20world
 SearchDeepLink(query: "hello world").url.absoluteString
 ```
 
@@ -39,6 +39,7 @@ SearchDeepLink(query: "hello world").url.absoluteString
 Want to add an app to the project? Please open a pull request!
 
 - Callsheet
+- Mail
 
 ## Generating Links
 
