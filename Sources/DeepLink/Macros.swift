@@ -30,3 +30,6 @@ public macro QueryItem(name: String, includeWhenNil: Bool = false) = #externalMa
 
 @attached(peer)
 public macro QueryItems() = #externalMacro(module: "DeepLinkPlugin", type: "QueryItems")
+
+@attached(peer)
+public macro User() = #externalMacro(module: "DeepLinkPlugin", type: "User")

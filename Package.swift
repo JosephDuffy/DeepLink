@@ -49,6 +49,14 @@ let package = Package(
             ]
         ),
 
+        .target(name: "IvoryDeepLink", dependencies: ["DeepLink"]),
+        .testTarget(
+            name: "IvoryDeepLinkTests",
+            dependencies: [
+                "IvoryDeepLink",
+            ]
+        ),
+
         .target(name: "MailDeepLink", dependencies: ["DeepLink"]),
         .testTarget(
             name: "MailDeepLinkTests",

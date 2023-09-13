@@ -39,6 +39,7 @@ SearchDeepLink(query: "hello world").url.absoluteString
 Want to add an app to the project? Please open a pull request!
 
 - Callsheet
+- Ivory
 - Mail
 - Overcast
 

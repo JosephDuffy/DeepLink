@@ -19,6 +19,7 @@ public struct DeepLink: MemberMacro {
             .trimmed
             .text == "true"
 
+        var userVariables: [(token: TokenSyntax, isOptional: Bool)] = []
         var hostVariables: [(token: TokenSyntax, isOptional: Bool)] = []
         var pathItemVariables: [(token: TokenSyntax, isOptional: Bool)] = []
         var haveOptionalPathItem = false
@@ -58,6 +59,12 @@ public struct DeepLink: MemberMacro {
                         haveOptionalPathItem = true
                     }
                     pathItemVariables.append(
+                        contentsOf: boundPropertyIdentifiers.map { identifier in
+                            (token: identifier, isOptional: isOptional)
+                        }
+                    )
+                } else if attributeName == "User" {
+                    userVariables.append(
                         contentsOf: boundPropertyIdentifiers.map { identifier in
                             (token: identifier, isOptional: isOptional)
                         }
@@ -113,6 +120,24 @@ public struct DeepLink: MemberMacro {
         var components = URLComponents()
         components.scheme = Self.scheme
         """
+
+        if let userVariable = userVariables.first {
+            guard userVariables.count == 1 else {
+                fatalError()
+            }
+
+            urlComponentsBuilder += "\n"
+
+            if userVariable.isOptional {
+                urlComponentsBuilder += #"""
+                if let \#(userVariable.token.trimmed) = self.\#(userVariable.token.trimmed) {
+                    components.user = "\(\#(userVariable.token.trimmed))"
+                }
+                """#
+            } else {
+                urlComponentsBuilder += #"components.user = "\(self.\#(userVariable.token.trimmed))""#
+            }
+        }
 
         if let hostVariable = hostVariables.first {
             guard hostVariables.count == 1 else {

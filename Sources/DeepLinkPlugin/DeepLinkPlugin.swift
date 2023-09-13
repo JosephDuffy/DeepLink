@@ -12,5 +12,6 @@ struct DeepLinkPlugin: CompilerPlugin {
         PathItem.self,
         QueryItem.self,
         QueryItems.self,
+        User.self,
     ]
 }
