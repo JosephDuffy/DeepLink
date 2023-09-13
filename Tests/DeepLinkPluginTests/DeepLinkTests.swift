@@ -63,7 +63,15 @@ final class DeepLinkTests: XCTestCase {
                     var components = URLComponents()
                     components.scheme = Self.scheme
                     components.host = "\(self.hostProperty)"
-                    components.path = "/\(self.path1)/\(self.path2)"
+                    var path = ""
+                    if components.host != nil {
+                        path = "/"
+                    }
+                    path += [
+                        "\(path1)",
+                        "\(path2)",
+                    ].joined(separator: "/")
+                    components.path = path
                     return components.url!
                 }
             }
@@ -98,7 +106,18 @@ final class DeepLinkTests: XCTestCase {
                     var components = URLComponents()
                     components.scheme = Self.scheme
                     components.host = "\(self.hostProperty)"
-                    components.path = "/\(self.path1)/\(self.path2)/"
+                    var path = ""
+                    if components.host != nil {
+                        path = "/"
+                    }
+                    path += [
+                        "\(path1)",
+                        "\(path2)",
+                    ].joined(separator: "/")
+                    components.path = path
+                    if !components.path.isEmpty {
+                        components.path += "/"
+                    }
                     return components.url!
                 }
             }
@@ -145,7 +164,18 @@ final class DeepLinkTests: XCTestCase {
                     var components = URLComponents()
                     components.scheme = Self.scheme
                     components.host = "\(self.hostProperty)"
-                    components.path = "/\(self.path1)/\(self.path2)/"
+                    var path = ""
+                    if components.host != nil {
+                        path = "/"
+                    }
+                    path += [
+                        "\(path1)",
+                        "\(path2)",
+                    ].joined(separator: "/")
+                    components.path = path
+                    if !components.path.isEmpty {
+                        components.path += "/"
+                    }
                     var queryItems: [URLQueryItem] = [
                         URLQueryItem(name: "query1", value: self.q1),
                         URLQueryItem(name: "q3", value: self.q3.map {
@@ -154,7 +184,9 @@ final class DeepLinkTests: XCTestCase {
                     if let q2 = self.q2 {
                         queryItems.append(URLQueryItem(name: "q2", value: q2))
                     }
-                    components.queryItems = queryItems
+                    if !queryItems.isEmpty {
+                        components.queryItems = queryItems
+                    }
                     return components.url!
                 }
             }

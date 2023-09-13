@@ -48,5 +48,13 @@ let package = Package(
                 "CallsheetDeepLink",
             ]
         ),
+
+        .target(name: "MailDeepLink", dependencies: ["DeepLink"]),
+        .testTarget(
+            name: "MailDeepLinkTests",
+            dependencies: [
+                "MailDeepLink",
+            ]
+        ),
     ]
 )

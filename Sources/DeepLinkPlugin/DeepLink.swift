@@ -19,9 +19,11 @@ public struct DeepLink: MemberMacro {
             .trimmed
             .text == "true"
 
-        var hostVariables: [TokenSyntax] = []
-        var pathItemVariables: [TokenSyntax] = []
+        var hostVariables: [(token: TokenSyntax, isOptional: Bool)] = []
+        var pathItemVariables: [(token: TokenSyntax, isOptional: Bool)] = []
+        var haveOptionalPathItem = false
         var queryItemVariables: [QueryItemVariable] = []
+        var queryItemsVariables: [TokenSyntax] = []
 
         for member in declaration.memberBlock.members {
             // is a property
@@ -40,10 +42,32 @@ public struct DeepLink: MemberMacro {
                 guard let attribute = attribute.as(AttributeSyntax.self) else { continue }
                 guard let attributeName = attribute.attributeName.as(IdentifierTypeSyntax.self)?.name.text else { continue }
 
+                lazy var isOptional = variable.bindings.contains { binding in
+                    guard let typeAnnotation = binding.typeAnnotation else { return false }
+                    if typeAnnotation.type.is(OptionalTypeSyntax.self) {
+                        return true
+                    } else if let identifierType = typeAnnotation.type.as(IdentifierTypeSyntax.self) {
+                        return identifierType.name.trimmed.text == "Optional"
+                    }
+
+                    return false
+                }
+
                 if attributeName == "PathItem" {
-                    pathItemVariables.append(contentsOf: boundPropertyIdentifiers)
+                    if isOptional {
+                        haveOptionalPathItem = true
+                    }
+                    pathItemVariables.append(
+                        contentsOf: boundPropertyIdentifiers.map { identifier in
+                            (token: identifier, isOptional: isOptional)
+                        }
+                    )
                 } else if attributeName == "Host" {
-                    hostVariables.append(contentsOf: boundPropertyIdentifiers)
+                    hostVariables.append(
+                        contentsOf: boundPropertyIdentifiers.map { identifier in
+                            (token: identifier, isOptional: isOptional)
+                        }
+                    )
                 } else if attributeName == "QueryItem" {
                     var queryItemName: String?
                     var includeWhenNil = false
@@ -69,17 +93,6 @@ public struct DeepLink: MemberMacro {
                         }
                     }
 
-                    let isOptional = variable.bindings.contains { binding in
-                        guard let typeAnnotation = binding.typeAnnotation else { return false }
-                        if typeAnnotation.type.is(OptionalTypeSyntax.self) {
-                            return true
-                        } else if let identifierType = typeAnnotation.type.as(IdentifierTypeSyntax.self) {
-                            return identifierType.name.trimmed.text == "Optional"
-                        }
-
-                        return false
-                    }
-
                     let variables = boundPropertyIdentifiers.map { identifier in
                         QueryItemVariable(
                             token: identifier,
@@ -90,6 +103,8 @@ public struct DeepLink: MemberMacro {
                     }
 
                     queryItemVariables.append(contentsOf: variables)
+                } else if attributeName == "QueryItems" {
+                    queryItemsVariables.append(contentsOf: boundPropertyIdentifiers)
                 }
             }
         }
@@ -105,25 +120,85 @@ public struct DeepLink: MemberMacro {
             }
 
             urlComponentsBuilder += "\n"
-            urlComponentsBuilder += #"components.host = "\(self.\#(hostVariable.trimmed))""#
+
+            if hostVariable.isOptional {
+                urlComponentsBuilder += #"""
+                if let \#(hostVariable.token.trimmed) = self.\#(hostVariable.token.trimmed) {
+                    components.host = "\(\#(hostVariable.token.trimmed))"
+                }
+                """#
+            } else {
+                urlComponentsBuilder += #"components.host = "\(self.\#(hostVariable.token.trimmed))""#
+            }
         }
 
-        var pathString = ""
+        if !pathItemVariables.isEmpty {
+            if haveOptionalPathItem {
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += #"var pathComponents: [String] = []"#
 
-        for pathItem in pathItemVariables {
-            pathString += #"/\(self.\#(pathItem.trimmed))"#
-        }
+                for pathItem in pathItemVariables {
+                    urlComponentsBuilder += "\n"
 
-        if !pathString.isEmpty {
-            if addTrailingSlash {
-                pathString += "/"
+                    if pathItem.isOptional {
+                        urlComponentsBuilder += #"""
+                        if let \#(pathItem.token.trimmed) = self.\#(pathItem.token.trimmed) {
+                            pathComponents.append("\(\#(pathItem.token.trimmed))")
+                        }
+                        """#
+                    } else {
+                        urlComponentsBuilder += #"pathComponents.append("/\(self.\#(pathItem.token.trimmed))")"#
+                    }
+
+                    urlComponentsBuilder += "\n"
+                    urlComponentsBuilder += """
+                    if !pathComponents.isEmpty {
+                        var path = ""
+                        if components.host != nil {
+                            path = "/"
+                        }
+                        path += pathComponents.joined(separator: "/")
+                        components.path = path
+                    }
+                    """
+                }
+            } else {
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += #"var path = """#
+
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += #"""
+                if components.host != nil {
+                    path = "/"
+                }
+                """#
+
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += "path += ["
+
+                for pathItem in pathItemVariables {
+                    urlComponentsBuilder += "\n"
+                    urlComponentsBuilder += #"    "\(\#(pathItem.token.trimmed))","#
+                }
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += #"].joined(separator: "/")"#
+
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += "components.path = path"
             }
 
-            urlComponentsBuilder += "\n"
-            urlComponentsBuilder += #"components.path = "\#(pathString)""#
+            if addTrailingSlash {
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += #"""
+                if !components.path.isEmpty {
+                    components.path += "/"
+                }
+                """#
+
+            }
         }
 
-        if !queryItemVariables.isEmpty {
+        if !queryItemVariables.isEmpty || !queryItemsVariables.isEmpty {
             var requiredQueryItems: [String] = []
             var optionalQueryItems: [String] = []
 
@@ -150,7 +225,7 @@ public struct DeepLink: MemberMacro {
 
             var queryItemsBuilder: String
 
-            if optionalQueryItems.isEmpty {
+            if optionalQueryItems.isEmpty && queryItemsVariables.isEmpty {
                 queryItemsBuilder = "let queryItems: [URLQueryItem] = ["
             } else {
                 queryItemsBuilder = "var queryItems: [URLQueryItem] = ["
@@ -168,10 +243,19 @@ public struct DeepLink: MemberMacro {
                 queryItemsBuilder += optionalQueryItems.joined(separator: "\n")
             }
 
+            for queryItemsVariable in queryItemsVariables {
+                queryItemsBuilder += "\n"
+                queryItemsBuilder += "queryItems += self.\(queryItemsVariable.trimmed)"
+            }
+
             urlComponentsBuilder += "\n"
             urlComponentsBuilder += queryItemsBuilder
             urlComponentsBuilder += "\n"
-            urlComponentsBuilder += "components.queryItems = queryItems"
+            urlComponentsBuilder += """
+            if !queryItems.isEmpty {
+                components.queryItems = queryItems
+            }
+            """
         }
 
         urlComponentsBuilder += "\n"

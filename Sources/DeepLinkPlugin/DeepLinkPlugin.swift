@@ -11,5 +11,6 @@ struct DeepLinkPlugin: CompilerPlugin {
         Host.self,
         PathItem.self,
         QueryItem.self,
+        QueryItems.self,
     ]
 }

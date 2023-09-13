@@ -27,3 +27,6 @@ public macro QueryItem(includeWhenNil: Bool = false) = #externalMacro(module: "D
 
 @attached(peer)
 public macro QueryItem(name: String, includeWhenNil: Bool = false) = #externalMacro(module: "DeepLinkPlugin", type: "QueryItem")
+
+@attached(peer)
+public macro QueryItems() = #externalMacro(module: "DeepLinkPlugin", type: "QueryItems")
