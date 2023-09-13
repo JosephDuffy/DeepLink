@@ -3,6 +3,8 @@ import DeepLink
 /// A deep link to open a screen used to compose a new email.
 ///
 /// If no values are provided this will open a blank compose UI.
+///
+/// Reference: https://datatracker.ietf.org/doc/html/rfc6068
 @DeepLink
 public struct ComposeEmailDeepLink: MailDeepLink {
     /// The email address(es) the email should be sent to. This can be provide
