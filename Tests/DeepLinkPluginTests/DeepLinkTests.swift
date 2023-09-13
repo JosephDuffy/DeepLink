@@ -68,8 +68,8 @@ final class DeepLinkTests: XCTestCase {
                         path = "/"
                     }
                     path += [
-                        "\(path1)",
-                        "\(path2)",
+                        "\(self.path1)",
+                        "\(self.path2)",
                     ].joined(separator: "/")
                     components.path = path
                     return components.url!
@@ -111,8 +111,8 @@ final class DeepLinkTests: XCTestCase {
                         path = "/"
                     }
                     path += [
-                        "\(path1)",
-                        "\(path2)",
+                        "\(self.path1)",
+                        "\(self.path2)",
                     ].joined(separator: "/")
                     components.path = path
                     if !components.path.isEmpty {
@@ -169,20 +169,20 @@ final class DeepLinkTests: XCTestCase {
                         path = "/"
                     }
                     path += [
-                        "\(path1)",
-                        "\(path2)",
+                        "\(self.path1)",
+                        "\(self.path2)",
                     ].joined(separator: "/")
                     components.path = path
                     if !components.path.isEmpty {
                         components.path += "/"
                     }
                     var queryItems: [URLQueryItem] = [
-                        URLQueryItem(name: "query1", value: self.q1),
+                        URLQueryItem(name: "query1", value: "\(self.q1)"),
                         URLQueryItem(name: "q3", value: self.q3.map {
                                 "\($0)"
                             })]
                     if let q2 = self.q2 {
-                        queryItems.append(URLQueryItem(name: "q2", value: q2))
+                        queryItems.append(URLQueryItem(name: "q2", value: "\(q2)"))
                     }
                     if !queryItems.isEmpty {
                         components.queryItems = queryItems

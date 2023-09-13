@@ -147,21 +147,21 @@ public struct DeepLink: MemberMacro {
                         }
                         """#
                     } else {
-                        urlComponentsBuilder += #"pathComponents.append("/\(self.\#(pathItem.token.trimmed))")"#
+                        urlComponentsBuilder += #"pathComponents.append("\(self.\#(pathItem.token.trimmed))")"#
                     }
-
-                    urlComponentsBuilder += "\n"
-                    urlComponentsBuilder += """
-                    if !pathComponents.isEmpty {
-                        var path = ""
-                        if components.host != nil {
-                            path = "/"
-                        }
-                        path += pathComponents.joined(separator: "/")
-                        components.path = path
-                    }
-                    """
                 }
+
+                urlComponentsBuilder += "\n"
+                urlComponentsBuilder += """
+                if !pathComponents.isEmpty {
+                    var path = ""
+                    if components.host != nil {
+                        path = "/"
+                    }
+                    path += pathComponents.joined(separator: "/")
+                    components.path = path
+                }
+                """
             } else {
                 urlComponentsBuilder += "\n"
                 urlComponentsBuilder += #"var path = """#
@@ -178,7 +178,7 @@ public struct DeepLink: MemberMacro {
 
                 for pathItem in pathItemVariables {
                     urlComponentsBuilder += "\n"
-                    urlComponentsBuilder += #"    "\(\#(pathItem.token.trimmed))","#
+                    urlComponentsBuilder += #"    "\(self.\#(pathItem.token.trimmed))","#
                 }
                 urlComponentsBuilder += "\n"
                 urlComponentsBuilder += #"].joined(separator: "/")"#
@@ -207,18 +207,18 @@ public struct DeepLink: MemberMacro {
                 let variableName = queryItemVariable.token.trimmed
 
                 if queryItemVariable.isOptional, !queryItemVariable.includeWhenNil {
-                    optionalQueryItems.append("""
-                    if let \(variableName) = self.\(variableName) {
-                        queryItems.append(URLQueryItem(name: "\(queryItemName)", value: \(variableName)))
+                    optionalQueryItems.append(#"""
+                    if let \#(variableName) = self.\#(variableName) {
+                        queryItems.append(URLQueryItem(name: "\#(queryItemName)", value: "\(\#(variableName))"))
                     }
-                    """)
+                    """#)
                 } else if queryItemVariable.isOptional {
                     requiredQueryItems.append(
                         #"URLQueryItem(name: "\#(queryItemName)", value: self.\#(variableName).map { "\($0)" })"#
                     )
                 } else {
                     requiredQueryItems.append(
-                        #"URLQueryItem(name: "\#(queryItemName)", value: self.\#(variableName))"#
+                        #"URLQueryItem(name: "\#(queryItemName)", value: "\(self.\#(variableName))")"#
                     )
                 }
             }

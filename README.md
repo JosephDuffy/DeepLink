@@ -40,6 +40,7 @@ Want to add an app to the project? Please open a pull request!
 
 - Callsheet
 - Mail
+- Overcast
 
 ## Generating Links
 

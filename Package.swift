@@ -56,5 +56,13 @@ let package = Package(
                 "MailDeepLink",
             ]
         ),
+
+        .target(name: "OvercastDeepLink", dependencies: ["DeepLink"]),
+        .testTarget(
+            name: "OvercastDeepLinkTests",
+            dependencies: [
+                "OvercastDeepLink",
+            ]
+        ),
     ]
 )
