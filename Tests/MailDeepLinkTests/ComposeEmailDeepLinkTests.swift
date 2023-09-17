@@ -34,4 +34,19 @@ final class ComposeEmailDeepLinkTests: XCTestCase {
             "mailto:?subject=Test%20Subject"
         )
     }
+
+    func testLinkWithToAddressAndSubjectAndExtraHeaders() {
+        let deepLink = ComposeEmailDeepLink(
+            to: "test@example.com",
+            subject: "Test Subject",
+            otherHeaders: [
+                "cc": "other@example.com",
+                "bcc": "secret@example.com",
+            ]
+        )
+        AssertEqual(
+            deepLink.url,
+            "mailto:test@example.com?subject=Test%20Subject&cc=other@example.com&bcc=secret@example.com"
+        )
+    }
 }
