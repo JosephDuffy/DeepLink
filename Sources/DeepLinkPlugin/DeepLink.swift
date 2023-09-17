@@ -9,15 +9,35 @@ public struct DeepLink: MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        let labeledArguments = node.arguments?.as(LabeledExprListSyntax.self)
+        let labeledArguments = node.arguments?.as(LabeledExprListSyntax.self) ?? []
 
-        let addTrailingSlash = labeledArguments?
-            .first(where: { $0.label?.trimmed.text == "trailingSlash" })?
-            .expression
-            .as(BooleanLiteralExprSyntax.self)?
-            .literal
-            .trimmed
-            .text == "true"
+        var addTrailingSlash = false
+        var scheme: String?
+
+        for argument in labeledArguments {
+            switch argument.label?.trimmed.text {
+            case "trailingSlash":
+                guard let expression = argument.expression.as(BooleanLiteralExprSyntax.self) else { continue }
+                switch expression.literal.tokenKind {
+                case .keyword(.true):
+                    addTrailingSlash = true
+                case .keyword(.false):
+                    addTrailingSlash = false
+                default:
+                    break
+                }
+            case "scheme":
+                guard let expression = argument.expression.as(StringLiteralExprSyntax.self) else { continue }
+                switch expression.segments.first?.as(StringSegmentSyntax.self)?.content.tokenKind {
+                case .stringSegment(let text):
+                    scheme = text
+                default:
+                    break
+                }
+            default:
+                break
+            }
+        }
 
         var userVariables: [(token: TokenSyntax, isOptional: Bool)] = []
         var hostVariables: [(token: TokenSyntax, isOptional: Bool)] = []
@@ -286,13 +306,19 @@ public struct DeepLink: MemberMacro {
         urlComponentsBuilder += "\n"
         urlComponentsBuilder += "return components.url!"
         
-        return [
+        var declarations: [DeclSyntax] = [
             #"""
             public var url: URL {
                 \#(raw: urlComponentsBuilder)
             }
             """#,
         ]
+
+        if let scheme {
+            declarations.append(#"public static let scheme = "\#(raw: scheme)""#)
+        }
+
+        return declarations
     }
 }
 

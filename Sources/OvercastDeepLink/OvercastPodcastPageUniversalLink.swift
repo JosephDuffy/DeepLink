@@ -4,10 +4,8 @@ import DeepLink
 /// otherwise this opens the Overcast website for the podcast.
 ///
 /// Reference: https://overcast.fm/podcasterinfo
-@DeepLink
+@DeepLink(scheme: "https")
 public struct OvercastPodcastPageUniversalLink: DeepLink {
-    public static let scheme = "https"
-
     @Host
     public let host = "overcast.fm"
 

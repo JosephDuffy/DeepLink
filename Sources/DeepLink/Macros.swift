@@ -16,6 +16,9 @@ public macro StaticDeepLink(_ string: String) = #externalMacro(module: "DeepLink
 @attached(member, names: named(url))
 public macro DeepLink(trailingSlash: Bool = false) = #externalMacro(module: "DeepLinkPlugin", type: "DeepLink")
 
+@attached(member, names: named(url), named(scheme))
+public macro DeepLink(scheme: String, trailingSlash: Bool = false) = #externalMacro(module: "DeepLinkPlugin", type: "DeepLink")
+
 @attached(peer)
 public macro Host() = #externalMacro(module: "DeepLinkPlugin", type: "Host")
 
