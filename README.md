@@ -39,6 +39,12 @@ Rather than being strict with its typings DeepLink relies on string interpolatio
 
 If a property is optional it will only be used to build the URL when it is non-nil. This is particularly useful for optional query items.
 
+## Why
+
+The idea for this came about when I saw the [URL scheme for Callsheet on Mastodon](https://mastodon.social/@caseyliss/111024103966666334), which made me think about how I added the Ivory URL scheme in to an [unreleased project of mine](https://github.com/JosephDuffy/FediFriend "FediFriend on GitHub").
+
+I then thought this would be an interesting project to use Swift macros with and at that point I had nerd sniped myself. I also think it's useful to have a repository of the URL schemes available for various apps.
+
 ## Generating Links
 
 The Swift REPL can be used to generate links in the terminal. This can be useful to test how other apps work, or if you're adding support for a new app to test that the generated strings work (this is not a substitute for unit tests 😉).
