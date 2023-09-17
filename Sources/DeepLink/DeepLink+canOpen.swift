@@ -7,6 +7,7 @@ import AppKit
 extension DeepLink {
     @available(iOSApplicationExtension, unavailable)
     @available(macOSApplicationExtension, unavailable)
+    @MainActor
     public static var canOpen: Bool {
         let schemeURL = URL(string: "\(scheme)://")!
         #if os(iOS)
