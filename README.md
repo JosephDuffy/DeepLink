@@ -3,10 +3,8 @@
 The `DeepLinks` package enables easily creating type-safe deep links. Deep links for some apps are included with the package. For apps that aren't included custom deep link types can be created using the `@DeepLink` macro.
 
 ```swift
-@DeepLink
+@DeepLink(scheme: "example")
 public struct SearchDeepLink: DeepLink {
-    public static let scheme = "example"
-
     @Host
     private let host = "search"
 
@@ -15,22 +13,14 @@ public struct SearchDeepLink: DeepLink {
 
     @QueryItem(name: "q")
     public var query: String
-
-    // @DeepLink macro adds this
-    public var url: URL {
-        var components = URLComponents()
-        components.scheme = Self.scheme
-        components.host = "\(self.host)"
-        components.path = "/\(self.category)"
-        let queryItems: [URLQueryItem] = [
-            URLQueryItem(name: "q", value: self.query)
-        ]
-        components.queryItems = queryItems
-        return components.url!
-    }
 }
 
-// example://search/all?q=hello%20world
+// DeepLink will add `url` and `scheme`
+
+// "example"
+SearchDeepLink.scheme
+
+// "example://search/all?q=hello%20world"
 SearchDeepLink(query: "hello world").url.absoluteString
 ```
 
@@ -42,6 +32,12 @@ Want to add an app to the project? Please open a pull request!
 - Ivory
 - Mail
 - Overcast
+
+## Type Flexibility
+
+Rather than being strict with its typings DeepLink relies on string interpolation to build URLs. This allows properties to be any type that conforms to `CustomStringConvertible`, such as `Int`s, enums, and custom types.
+
+If a property is optional it will only be used to build the URL when it is non-nil. This is particularly useful for optional query items.
 
 ## Generating Links
 
