@@ -22,6 +22,9 @@ let package = Package(
                 "DeepLinkPlugin",
             ]
         ),
+        .target(
+            name: "DeepLinkTestSupport"
+        ),
         .macro(
             name: "DeepLinkPlugin",
             dependencies: [
@@ -46,6 +49,7 @@ let package = Package(
             name: "CallsheetDeepLinkTests",
             dependencies: [
                 "CallsheetDeepLink",
+                "DeepLinkTestSupport",
             ]
         ),
 
@@ -53,6 +57,7 @@ let package = Package(
         .testTarget(
             name: "IvoryDeepLinkTests",
             dependencies: [
+                "DeepLinkTestSupport",
                 "IvoryDeepLink",
             ]
         ),
@@ -61,6 +66,7 @@ let package = Package(
         .testTarget(
             name: "MailDeepLinkTests",
             dependencies: [
+                "DeepLinkTestSupport",
                 "MailDeepLink",
             ]
         ),
@@ -69,6 +75,7 @@ let package = Package(
         .testTarget(
             name: "OvercastDeepLinkTests",
             dependencies: [
+                "DeepLinkTestSupport",
                 "OvercastDeepLink",
             ]
         ),

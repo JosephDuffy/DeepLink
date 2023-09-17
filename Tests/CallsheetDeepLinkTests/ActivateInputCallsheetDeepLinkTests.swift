@@ -1,11 +1,12 @@
+import DeepLinkTestSupport
 import CallsheetDeepLink
 import XCTest
 
 final class ActivateInputCallsheetDeepLinkTests: XCTestCase {
     func testCreatingURL() {
         let deepLink = ActivateInputCallsheetDeepLink()
-        XCTAssertEqual(
-            deepLink.url.absoluteString,
+        AssertEqual(
+            deepLink.url,
             "callsheet://activateInput"
         )
     }

@@ -1,3 +1,4 @@
+import DeepLinkTestSupport
 import IvoryDeepLink
 import XCTest
 
@@ -9,8 +10,8 @@ final class IvoryUserProfileDeepLinkTests: XCTestCase {
                 domain: "mastodon.social"
             )
         )
-        XCTAssertEqual(
-            link.url.absoluteString,
+        AssertEqual(
+            link.url,
             "ivory://josephduffy@mastodon.social/user_profile/josephduffy@mastodon.social"
         )
     }
@@ -26,8 +27,8 @@ final class IvoryUserProfileDeepLinkTests: XCTestCase {
                 domain: "mastodon.social"
             )
         )
-        XCTAssertEqual(
-            link.url.absoluteString,
+        AssertEqual(
+            link.url,
             "ivory://ivory@tapbots.social/user_profile/josephduffy@mastodon.social"
         )
     }
