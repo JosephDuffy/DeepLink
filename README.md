@@ -1,6 +1,6 @@
-# DeepLinks
+# DeepLink
 
-The `DeepLinks` package enables easily creating type-safe deep links. Deep links for some apps are included with the package. For apps that aren't included custom deep link types can be created using the `@DeepLink` macro.
+The `DeepLink` package enables easily creating type-safe deep links. Deep links for some apps are included with the package. For apps that aren't included custom deep link types can be created using the `@DeepLink` macro.
 
 ```swift
 @DeepLink(scheme: "example")
