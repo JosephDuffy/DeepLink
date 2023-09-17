@@ -33,3 +33,7 @@ public macro QueryItems() = #externalMacro(module: "DeepLinkPlugin", type: "Quer
 
 @attached(peer)
 public macro User() = #externalMacro(module: "DeepLinkPlugin", type: "User")
+
+@attached(member, names: named(description), named(init))
+@attached(extension, conformances: TypedStringURLComponent)
+public macro TypedStringURLComponent() = #externalMacro(module: "DeepLinkPlugin", type: "TypedStringURLComponent")

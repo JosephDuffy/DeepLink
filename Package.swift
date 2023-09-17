@@ -134,5 +134,23 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
+
+        .target(
+            name: "SettingsDeepLink",
+            dependencies: ["DeepLink"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .testTarget(
+            name: "SettingsDeepLinkTests",
+            dependencies: [
+                "DeepLinkTestSupport",
+                "SettingsDeepLink",
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
     ]
 )
