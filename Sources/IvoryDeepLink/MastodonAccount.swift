@@ -15,6 +15,7 @@ public struct MastodonAccount: CustomStringConvertible, LosslessStringConvertibl
     public init?(_ description: String) {
         let split = description.components(separatedBy: "@")
         guard split.count == 2 else { return nil }
+        guard !split[0].isEmpty, !split[1].isEmpty else { return nil }
         username = split[0]
         domain = split[1]
     }
