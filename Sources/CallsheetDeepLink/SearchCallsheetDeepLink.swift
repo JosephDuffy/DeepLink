@@ -1,7 +1,7 @@
 import DeepLink
 
 /// A deep link to the the search UI with a prefilled query.
-@DeepLink
+@DeepLink(generateInitWithURL: true)
 public struct SearchCallsheetDeepLink: CallsheetDeepLink {
     @Host
     private let searchPathItem = "search"

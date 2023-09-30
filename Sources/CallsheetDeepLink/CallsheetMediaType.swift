@@ -1,21 +1,17 @@
 import DeepLink
 
-public struct CallsheetMediaType: CustomStringConvertible, Hashable, Sendable {
+public struct CallsheetMediaType: Hashable, LosslessStringConvertible, Sendable {
     public static var tv: CallsheetMediaType {
-        CallsheetMediaType(urlValue: "tv")
+        CallsheetMediaType("tv")
     }
 
     public static var movie: CallsheetMediaType {
-        CallsheetMediaType(urlValue: "movie")
+        CallsheetMediaType("movie")
     }
 
-    public let urlValue: String
+    public let description: String
 
-    public var description: String {
-        urlValue
-    }
-
-    public init(urlValue: String) {
-        self.urlValue = urlValue
+    public init(_ description: String) {
+        self.description = description
     }
 }

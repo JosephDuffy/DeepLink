@@ -13,11 +13,18 @@ public macro StaticDeepLink(_ string: String) = #externalMacro(module: "DeepLink
 ///
 /// - parameter trailingSlash: When `true` and at least 1 property is decorated
 ///   with ``PathItem()`` a trailing `/` will be added to the path.
-@attached(member, names: named(url))
-public macro DeepLink(trailingSlash: Bool = false) = #externalMacro(module: "DeepLinkPlugin", type: "DeepLink")
+@attached(member, names: named(url), named(init))
+public macro DeepLink(
+    generateInitWithURL: Bool = false,
+    trailingSlash: Bool = false
+) = #externalMacro(module: "DeepLinkPlugin", type: "DeepLink")
 
-@attached(member, names: named(url), named(scheme))
-public macro DeepLink(scheme: String, trailingSlash: Bool = false) = #externalMacro(module: "DeepLinkPlugin", type: "DeepLink")
+@attached(member, names: named(url), named(scheme), named(init))
+public macro DeepLink(
+    scheme: String,
+    generateInitWithURL: Bool = false,
+    trailingSlash: Bool = false
+) = #externalMacro(module: "DeepLinkPlugin", type: "DeepLink")
 
 @attached(peer)
 public macro Host() = #externalMacro(module: "DeepLinkPlugin", type: "Host")
