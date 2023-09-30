@@ -1,6 +1,6 @@
 import DeepLink
 
-@DeepLink(trailingSlash: true)
+@DeepLink(generateInitWithURL: true, trailingSlash: true)
 public struct TVSeasonCallsheetDeepLink: CallsheetDeepLink {
     @Host
     private let host = "open"
