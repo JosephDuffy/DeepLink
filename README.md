@@ -3,8 +3,10 @@
 The `DeepLink` package enables easily creating type-safe deep links. Deep links for some apps are included with the package. For apps that aren't included custom deep link types can be created using the `@DeepLink` macro.
 
 ```swift
-@DeepLink(scheme: "example")
+@DeepLink(generateInitWithURL: true)
 public struct SearchDeepLink: DeepLink {
+    public static let scheme = "example"
+
     @Host
     private let host = "search"
 
@@ -15,13 +17,14 @@ public struct SearchDeepLink: DeepLink {
     public var query: String
 }
 
-// DeepLink will add `url` and `scheme`
+// DeepLink will add `url` property and `init(url:)`
 
-// "example"
-SearchDeepLink.scheme
+SearchDeepLink.scheme // "example"
+SearchDeepLink(query: "hello world").url.absoluteString // "example://search/all?q=hello%20world"
 
-// "example://search/all?q=hello%20world"
-SearchDeepLink(query: "hello world").url.absoluteString
+let deepLink = SearchDeepLink(url: URL(string: "example://search/tv?q=still%20up")!)!
+deepLink.category // "tv"
+deepLink.query // "still up"
 ```
 
 ## Supported Apps
@@ -38,6 +41,8 @@ Want to add an app to the project? Please open a pull request!
 Rather than being strict with its typings DeepLink relies on string interpolation to build URLs. This allows properties to be any type that conforms to `CustomStringConvertible`, such as `Int`s, enums, and custom types.
 
 If a property is optional it will only be used to build the URL when it is non-nil. This is particularly useful for optional query items.
+
+This also extends to initialising a deep link with a `URL` -- as long as the type conforms to `LosslessStringConvertible`.
 
 ## Why
 
@@ -65,6 +70,5 @@ $R0: Foundation.URL = "callsheet://activateInput"
 ## Future Direction
 
 - Support for more apps
-- Generate an initialiser the parses a `URL`
 - Add metadata for external tools to read
   - Could enable creating a tool for generating and testing deep links
