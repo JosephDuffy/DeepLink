@@ -1,6 +1,3 @@
-@attached(member, names: named(url))
-public macro StaticDeepLink(_ string: String) = #externalMacro(module: "DeepLinkPlugin", type: "StaticDeepLink")
-
 /// Expands to provide a `url` property that's built using the properties of the
 /// type this macro is attached to.
 ///
