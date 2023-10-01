@@ -1,6 +1,6 @@
 import DeepLink
 
-@DeepLink
+@DeepLink(generateInitWithURL: true)
 public struct SettingsCameraDeepLink: PathedSettingsDeepLink {
     @PathItem
     public let root: SettingsRoot = .camera
