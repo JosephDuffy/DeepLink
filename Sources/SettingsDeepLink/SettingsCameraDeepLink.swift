@@ -21,10 +21,6 @@ extension SettingsRoot {
 
 @TypedStringURLComponent
 public struct SettingsCameraPath: TypedStringURLComponent {
-    public static var recordVideo: Self {
-        "Record Video"
-    }
-    public static var recordSloMo: Self {
-        "Record Slo-mo"
-    }
+    public static let recordVideo: Self = "Record Video"
+    public static let recordSloMo: Self = "Record Slo-mo"
 }
