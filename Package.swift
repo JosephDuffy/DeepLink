@@ -82,6 +82,24 @@ let package = Package(
         ),
 
         .target(
+            name: "FeedbackAssistantDeepLink",
+            dependencies: ["DeepLink"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .testTarget(
+            name: "FeedbackAssistantDeepLinkTests",
+            dependencies: [
+                "DeepLinkTestSupport",
+                "FeedbackAssistantDeepLink",
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+
+        .target(
             name: "IvoryDeepLink",
             dependencies: ["DeepLink"],
             swiftSettings: [

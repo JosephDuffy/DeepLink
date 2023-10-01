@@ -32,6 +32,7 @@ deepLink.query // "still up"
 Want to add an app to the project? Please open a pull request!
 
 - Callsheet
+- Feedback Assistant
 - Ivory
 - Mail
 - Overcast
