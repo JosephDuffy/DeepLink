@@ -435,7 +435,23 @@ public struct DeepLink: MemberMacro {
                 """#
             } else {
                 initialiser += #"""
-                    let pathComponents = components.path.split(separator: "/")
+                    var componentsPath = components.path
+                    if components.host != nil, components.host != "" {
+                        // Remove leading slash before splitting
+                        componentsPath = String(componentsPath.dropFirst())
+                    }
+                """#
+
+
+                if addTrailingSlash {
+                    initialiser += #"""
+                        guard componentsPath.last == "/" else { return nil }
+                        componentsPath = String(componentsPath.dropLast())
+                    """#
+                }
+
+                initialiser += #"""
+                    let pathComponents = componentsPath.split(separator: "/", omittingEmptySubsequences: false)
                     guard pathComponents.count == \#(pathItemVariables.count) else { return nil }
                 """#
 
@@ -443,6 +459,7 @@ public struct DeepLink: MemberMacro {
                     let variableName = pathItemVariable.identifier.identifier.trimmed.text + "String"
                     initialiser += #"""
                         let \#(variableName) = String(pathComponents[\#(index)])
+                        guard !\#(variableName).isEmpty else { return nil }
                     """#
 
                     if pathItemVariable.isOptional {
