@@ -2,7 +2,7 @@ import DeepLink
 
 /// Open the details screen displaying the media with the provieded TMDB
 /// identifier and media type.
-@DeepLink
+@DeepLink(generateInitWithURL: true)
 public struct MediaDetailsCallsheetDeepLink: CallsheetDeepLink {
     @Host
     private let host = "open"

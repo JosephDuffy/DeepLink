@@ -1,6 +1,6 @@
 import DeepLink
 
-@DeepLink
+@DeepLink(generateInitWithURL: true)
 public struct TVEpisodeCallsheetDeepLink: CallsheetDeepLink {
     @Host
     private let host = "open"

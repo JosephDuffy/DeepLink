@@ -12,18 +12,18 @@ public struct ComposeEmailDeepLink: MailDeepLink {
     /// both. It is recommended to only use the host for this purpose.
     ///
     /// To send to multiple email addresses separate each address with a comma.
-    @PathItem()
+    @PathItem
     public var to: String?
 
-    @QueryItem()
+    @QueryItem
     public var subject: String?
 
-    @QueryItem()
+    @QueryItem
     public var body: String?
 
     public var otherHeaders: [String: String?]
 
-    @QueryItems()
+    @QueryItems
     private var _otherHeaders: [URLQueryItem] {
         otherHeaders.map { URLQueryItem(name: $0.key, value: $0.value) }
     }

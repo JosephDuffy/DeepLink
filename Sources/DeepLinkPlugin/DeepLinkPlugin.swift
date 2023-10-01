@@ -6,7 +6,6 @@ import SwiftSyntaxMacros
 @main
 struct DeepLinkPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        StaticDeepLink.self,
         DeepLink.self,
         Host.self,
         PathItem.self,
