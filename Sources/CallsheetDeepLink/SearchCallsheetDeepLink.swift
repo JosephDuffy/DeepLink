@@ -4,7 +4,7 @@ import DeepLink
 @DeepLink(generateInitWithURL: true)
 public struct SearchCallsheetDeepLink: CallsheetDeepLink {
     @Host
-    private let searchPathItem = "search"
+    private let host = "search"
 
     @PathItem
     public var mediaType: CallsheetMediaType
