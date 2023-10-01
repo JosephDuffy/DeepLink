@@ -3,7 +3,7 @@ import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
-    name: "DeepLinks",
+    name: "DeepLink",
     platforms: [
         .macOS(.v10_15),
         .iOS(.v13),
@@ -75,6 +75,24 @@ let package = Package(
             dependencies: [
                 "CallsheetDeepLink",
                 "DeepLinkTestSupport",
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+
+        .target(
+            name: "FeedbackAssistantDeepLink",
+            dependencies: ["DeepLink"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .testTarget(
+            name: "FeedbackAssistantDeepLinkTests",
+            dependencies: [
+                "DeepLinkTestSupport",
+                "FeedbackAssistantDeepLink",
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")

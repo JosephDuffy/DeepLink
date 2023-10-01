@@ -25,7 +25,7 @@ jobs:
         run: swift test --enable-code-coverage
 
       - name: Convert coverage to lcov
-        run: xcrun llvm-cov export -format="lcov" .build/debug/DeepLinksPackageTests.xctest/Contents/MacOS/DeepLinksPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+        run: xcrun llvm-cov export -format="lcov" .build/debug/DeepLinkPackageTests.xctest/Contents/MacOS/DeepLinkPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -81,7 +81,7 @@ jobs:
       - name: Run Tests
         run: |
           set -o pipefail
-          mint run xcutils test ${{ matrix.platform }} --scheme DeepLinks-Package --enable-code-coverage | $(mint which xcbeautify)
+          mint run xcutils test ${{ matrix.platform }} --scheme DeepLink-Package --enable-code-coverage | $(mint which xcbeautify)
 
       - name: Convert coverage for Codecov
         id: convert-coverage

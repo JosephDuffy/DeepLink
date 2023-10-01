@@ -15,10 +15,10 @@ Section 3.2. of [RFC 3986](https://www.ietf.org/rfc/rfc3986.txt) covers the _aut
 `@DeepLink` will account for these things itself, but when you're creating your own deep links it's necessary to know when you need `@Host` and when it should be omitted. Look at these examples:
 
 ```
-https://github.com/JosephDuffy/DeepLinks
-\___/   \________/\____________________/
-  |          |               |
-scheme      host            path
+https://github.com/JosephDuffy/DeepLink
+\___/   \________/\___________________/
+  |          |              |
+scheme      host           path
 
 mailto:test@example.com
 \____/ \______________/

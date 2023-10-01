@@ -5,10 +5,8 @@ import DeepLink
 /// will open the ``callbackURL``, if provided.
 ///
 /// Reference: https://overcast.fm/podcasterinfo
-@DeepLink
+@DeepLink(scheme: "overcast")
 public struct OvercastSubscribeDeepLink: DeepLink {
-    public static let scheme = "overcast"
-
     @Host
     public let host = "x-callback-url"
 
