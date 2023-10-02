@@ -1,0 +1,13 @@
+version: 1
+builder:
+  configs:
+    - documentation_targets:
+        [
+          DeepLink,
+          DeepLinkTestSupport,
+          CallsheetDeepLink,
+          FeedbackAssistantDeepLink,
+          IvoryDeepLink,
+          MailDeepLink,
+          OvercastDeepLink,
+        ]
