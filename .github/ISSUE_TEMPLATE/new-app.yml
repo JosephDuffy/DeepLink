@@ -1,0 +1,36 @@
+name: New App Request
+description: Request support for a new app
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form can be used to request support for a new app. This not guarantee that the app will be added.
+
+        A page documenting the URL scheme is **required**; without this scheme cannot be determined.
+
+        Submitting this form is _not_ required if you wish to open a pull request with support for a new app.
+  - type: input
+    id: reference
+    attributes:
+      label: URL Scheme Reference
+      description: A link to a webpage documenting the URL scheme of the app.
+    validations:
+      required: true
+  - type: dropdown
+    id: is-developer
+    attributes:
+      label: Are you the developer of the app?
+      description: If the app requires payment to test a promo code may be required.
+      options:
+        - "No"
+        - "Yes - the app can be tested for free"
+        - "Yes - the app requires payment to test and I can provide a promo code"
+        - "Yes - the app requires payment to test and I can not provide a promo code"
+      validations:
+        required: true
+  - type: markdown
+    id: comment
+    attributes:
+      label: Other Comment
+    validations:
+      required: false
