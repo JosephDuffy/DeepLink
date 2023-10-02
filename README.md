@@ -1,6 +1,6 @@
 # DeepLink
 
-The `DeepLink` package enables easily creating type-safe deep links. Deep links for some apps are included with the package. For apps that aren't included custom deep link types can be created using the `@DeepLink` macro.
+Create and use type-safe deep links using Swift macros.
 
 ```swift
 @DeepLink(generateInitWithURL: true)
@@ -29,13 +29,14 @@ deepLink.query // "still up"
 
 ## Supported Apps
 
-Want to add an app to the project? Please open a pull request!
-
 - Callsheet
 - Feedback Assistant
 - Ivory
 - Mail
 - Overcast
+- Settings ([in progress](https://github.com/JosephDuffy/DeepLink/pull/2 "PR adding support for the Settings app"))
+
+Want to add an app to the project? Please open a pull request or [submit an issue](https://github.com/JosephDuffy/DeepLink/issues/new?assignees=&labels=&projects=&template=new-app.yml)!
 
 ## Type Flexibility
 
@@ -44,6 +45,29 @@ Rather than being strict with its typings DeepLink relies on string interpolatio
 If a property is optional it will only be used to build the URL when it is non-nil. This is particularly useful for optional query items.
 
 This also extends to initialising a deep link with a `URL` -- as long as the type conforms to `LosslessStringConvertible`.
+
+## Status
+
+I currently class DeepLink as a beta package. I'm not aware of any issues with the implementation but I am holding off on a 1.0 until I'm happier with the API. API will changes will include `@available(*, deprecated, renamed: "<new-name>")` where possible so updating should not be painful.
+
+### Minimum for 1.0
+
+Some things I would class as required for the 1.0:
+
+- `@Port`
+- `@Fragment`
+- More tests
+- Full documentation
+- Feedback to validate how clear the API is and what features are important
+
+### Post 1.0
+
+There's a lot that could be done in future releases, such as:
+
+- Support for more apps
+- Add metadata for external tools to read
+  - Could enable creating a tool for generating and testing deep links
+- Support for `init(url:)` in more scenarios (e.g. optional `@PathItem`s)
 
 ## Why
 
@@ -67,9 +91,3 @@ Type :help for assistance.
   2> ActivateInput().url
 $R0: Foundation.URL = "callsheet://activateInput"
 ```
-
-## Future Direction
-
-- Support for more apps
-- Add metadata for external tools to read
-  - Could enable creating a tool for generating and testing deep links
