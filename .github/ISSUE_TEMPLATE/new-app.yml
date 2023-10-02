@@ -14,8 +14,8 @@ body:
     attributes:
       label: URL Scheme Reference
       description: A link to a webpage documenting the URL scheme of the app.
-      validations:
-        required: true
+    validations:
+      required: true
   - type: dropdown
     id: is-developer
     attributes:
@@ -26,11 +26,11 @@ body:
         - "Yes - the app can be tested for free"
         - "Yes - the app requires payment to test and I can provide a promo code"
         - "Yes - the app requires payment to test and I can not provide a promo code"
-      validations:
-        required: true
-  - type: textfield
+    validations:
+      required: true
+  - type: textarea
     id: comment
     attributes:
       label: Other Comment
-      validations:
-        required: false
+    validations:
+      required: false
