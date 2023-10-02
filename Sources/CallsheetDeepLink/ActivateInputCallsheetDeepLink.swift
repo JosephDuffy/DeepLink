@@ -8,5 +8,7 @@ public struct ActivateInputCallsheetDeepLink: CallsheetDeepLink {
     @Host
     private let host = "activateInput"
 
+    /// Create a new deep link that opens the search UI with the keyboard
+    /// activated.
     public init() {}
 }
