@@ -1,20 +1,11 @@
 import DeepLink
 
 /// A kind of media supported by Callsheet.
-public struct CallsheetMediaType: Hashable, LosslessStringConvertible, Sendable {
+@TypedStringURLComponent
+public struct CallsheetMediaType: TypedStringURLComponent {
     /// A TV show.
-    public static var tv: CallsheetMediaType {
-        CallsheetMediaType("tv")
-    }
+    public static let tv: Self = "tv"
 
     /// A movie.
-    public static var movie: CallsheetMediaType {
-        CallsheetMediaType("movie")
-    }
-
-    public let description: String
-
-    public init(_ description: String) {
-        self.description = description
-    }
+    public static let movie: Self = "movie"
 }
