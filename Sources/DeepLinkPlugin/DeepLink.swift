@@ -1,5 +1,4 @@
 import Foundation
-@preconcurrency import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
 
@@ -559,16 +558,4 @@ private struct QueryItemVariable {
     let explicitQueryItemName: String?
 
     let includeWhenNil: Bool
-}
-
-private struct ErrorDiagnosticMessage: DiagnosticMessage, Error {
-    let message: String
-    let diagnosticID: MessageID
-    let severity: DiagnosticSeverity
-
-    init(id: String, message: String) {
-        self.message = message
-        diagnosticID = MessageID(domain: "uk.josephduffy.DeepLink", id: id)
-        severity = .error
-    }
 }

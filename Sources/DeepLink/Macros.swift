@@ -44,3 +44,6 @@ public macro User() = #externalMacro(module: "DeepLinkPlugin", type: "User")
 @attached(member, names: named(description), named(init))
 @attached(extension, conformances: TypedStringURLComponent)
 public macro TypedStringURLComponent() = #externalMacro(module: "DeepLinkPlugin", type: "TypedStringURLComponent")
+
+@attached(peer, names: named(deepLinkParameters), named(makeWithParameters))
+public macro ParametersInitialiser(nameMap: [String: String] = [:]) = #externalMacro(module: "DeepLinkPlugin", type: "ParametersInitialiser")
