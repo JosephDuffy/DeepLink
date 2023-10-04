@@ -65,8 +65,8 @@ Some things I would class as required for the 1.0:
 There's a lot that could be done in future releases, such as:
 
 - Support for more apps
-- Add metadata for external tools to read
-  - Could enable creating a tool for generating and testing deep links
+- Add metadata for external tools to read (https://github.com/JosephDuffy/DeepLink/pull/4)
+  - Could enable creating a tool for generating and testing deep links (https://github.com/JosephDuffy/DeepLink/pull/5)
 - Support for `init(url:)` in more scenarios (e.g. optional `@PathItem`s)
 
 ## Why
