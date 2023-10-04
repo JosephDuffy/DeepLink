@@ -18,14 +18,14 @@ public struct TVEpisodeCallsheetDeepLink: CallsheetDeepLink {
     public var season: Int
 
     @PathItem
-    private let epsisodePathItem = "episode"
+    private let episodePathItem = "episode"
 
     @PathItem
-    public var epiosde: Int
+    public var episode: Int
 
     public init(tmdbId: Int, season: Int, episode: Int) {
         self.tmdbId = tmdbId
         self.season = season
-        self.epiosde = episode
+        self.episode = episode
     }
 }
