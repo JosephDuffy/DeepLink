@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "DeepLink",
     platforms: [
-        .macOS(.v10_15),
+        .macOS(.v11),
         .iOS(.v13),
         .tvOS(.v13),
         .watchOS(.v6),
@@ -14,6 +14,7 @@ let package = Package(
     products: [
         .library(name: "DeepLink", targets: ["DeepLink"]),
         .library(name: "CallsheetDeepLink", targets: ["CallsheetDeepLink"]),
+        .executable(name: "deeplink", targets: ["DeepLinkTUI"]),
     ],
     dependencies: [
         .package(
@@ -21,6 +22,10 @@ let package = Package(
             branch: "main"
         ),
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.3.0"),
+        .package(
+            url: "https://github.com/rensbreur/SwiftTUI.git",
+            branch: "main"
+        ),
     ],
     targets: [
         .target(
@@ -60,6 +65,15 @@ let package = Package(
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+
+        .executableTarget(
+            name: "DeepLinkTUI",
+            dependencies: [
+                "CallsheetDeepLink",
+                "DeepLink",
+                "SwiftTUI",
             ]
         ),
 
