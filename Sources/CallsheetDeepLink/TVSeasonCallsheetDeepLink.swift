@@ -1,7 +1,7 @@
 import DeepLink
 
 @DeepLink(generateInitWithURL: true, trailingSlash: true)
-public struct TVSeasonCallsheetDeepLink: CallsheetDeepLink {
+public struct TVSeasonCallsheetDeepLink: CallsheetDeepLink, ParameterisedDeepLink {
     @Host
     private let host = "open"
 
@@ -17,6 +17,7 @@ public struct TVSeasonCallsheetDeepLink: CallsheetDeepLink {
     @PathItem
     public var season: Int
 
+    @ParametersInitialiser(nameMap: ["tmdbId": "TMDB ID", "season": "Season"])
     public init(tmdbId: Int, season: Int) {
         self.tmdbId = tmdbId
         self.season = season
