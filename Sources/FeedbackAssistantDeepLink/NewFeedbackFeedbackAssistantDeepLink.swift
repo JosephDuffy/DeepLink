@@ -1,6 +1,6 @@
 import DeepLink
 
-@DeepLink
+@DeepLink(generateInitWithURL: true)
 public struct NewFeedbackFeedbackAssistantDeepLink: FeedbackAssistantDeepLink {
     @Host
     private let host = "new"
