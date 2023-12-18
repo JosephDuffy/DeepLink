@@ -27,6 +27,9 @@ public macro DeepLink(
 public macro Host() = #externalMacro(module: "DeepLinkPlugin", type: "Host")
 
 @attached(peer)
+public macro Port() = #externalMacro(module: "DeepLinkPlugin", type: "Port")
+
+@attached(peer)
 public macro PathItem() = #externalMacro(module: "DeepLinkPlugin", type: "PathItem")
 
 @attached(peer)

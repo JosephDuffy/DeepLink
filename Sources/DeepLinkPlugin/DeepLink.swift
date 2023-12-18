@@ -52,6 +52,7 @@ public struct DeepLink: MemberMacro {
 
         var userVariables: [Property] = []
         var hostVariables: [Property] = []
+        var portVariables: [Property] = []
         var pathItemVariables: [Property] = []
         var haveOptionalPathItem = false
         var queryItemVariables: [QueryItemVariable] = []
@@ -99,6 +100,14 @@ public struct DeepLink: MemberMacro {
                     userVariables.append(contentsOf: declaredProperties)
                 } else if attributeName == "Host" {
                     hostVariables.append(contentsOf: declaredProperties)
+                } else if attributeName == "Port" {
+                    portVariables.append(contentsOf: declaredProperties)
+
+                    for property in declaredProperties {
+                        if property.typeAnnotation?.type.trimmed.description != "Int" {
+                            throw ErrorDiagnosticMessage(id: "unsupported-port-type", message: "@Port can only be applied to Int properties")
+                        }
+                    }
                 } else if attributeName == "QueryItem" {
                     var queryItemName: String?
                     var includeWhenNil = false
@@ -134,11 +143,6 @@ public struct DeepLink: MemberMacro {
 
                     queryItemVariables.append(contentsOf: variables)
                 } else if attributeName == "QueryItems" {
-                    for property in declaredProperties {
-                        if property.typeAnnotation?.type.trimmed.description != "[URLQueryItem]" {
-                            throw ErrorDiagnosticMessage(id: "unsupported-query-items-type", message: "@QueryItems currently only supports properties with the explicit type `[URLQueryItem]`")
-                        }
-                    }
                     queryItemsVariables.append(contentsOf: declaredProperties)
                 }
             }
@@ -182,6 +186,35 @@ public struct DeepLink: MemberMacro {
                 """#
             } else {
                 urlComponentsBuilder += #"components.host = "\(self.\#(hostVariable.identifier.identifier.trimmed))""#
+            }
+        }
+
+        if let portVariable = portVariables.first {
+            guard hostVariables.count == 1 else {
+                fatalError()
+            }
+
+            urlComponentsBuilder += "\n"
+
+            if let defaultValue = portVariable.defaultValue {
+                urlComponentsBuilder += #"""
+                if self.\#(portVariable.identifier.identifier.trimmed) != \#(defaultValue) {
+                """#
+            }
+
+            if portVariable.isOptional {
+                urlComponentsBuilder += #"""
+                if let \#(portVariable.identifier.identifier.trimmed) = self.\#(portVariable.identifier.identifier.trimmed) {
+                    if \#(portVariable.identifier.trimmed) !=
+                    components.port = \#(portVariable.identifier.trimmed)
+                }
+                """#
+            } else {
+                urlComponentsBuilder += #"components.port = self.\#(portVariable.identifier.identifier.trimmed)"#
+            }
+
+            if portVariable.defaultValue != nil {
+                urlComponentsBuilder += "}"
             }
         }
 
@@ -297,7 +330,21 @@ public struct DeepLink: MemberMacro {
 
             for queryItemsVariable in queryItemsVariables {
                 queryItemsBuilder += "\n"
-                queryItemsBuilder += "queryItems += self.\(queryItemsVariable.identifier.trimmed)"
+                if queryItemsVariable.typeAnnotation?.type.trimmed.description == "[URLQueryItem]" {
+                    queryItemsBuilder += "queryItems += self.\(queryItemsVariable.identifier.trimmed)"
+                } else {
+                    let uniqueName = context.makeUniqueName("queryItem")
+                    queryItemsBuilder += #"""
+                    for \#(uniqueName) in self.\#(queryItemsVariable.identifier) {
+                        queryItems.append(
+                            URLQueryItem(
+                                name: "\(\#(uniqueName).key)",
+                                value: \#(uniqueName).value
+                            )
+                        )
+                    }
+                    """#
+                }
             }
 
             urlComponentsBuilder += "\n"
@@ -353,32 +400,32 @@ public struct DeepLink: MemberMacro {
                 }
             """
 
-            if let hostProperty = hostVariables.first {
-                if hostProperty.mustBeInitialised {
-                    if hostProperty.isOptional {
+            if let hostVariable = hostVariables.first {
+                if hostVariable.mustBeInitialised {
+                    if hostVariable.isOptional {
                         initialiser += #"""
-                            self.\#(hostProperty.identifier.identifier.trimmed) = components.host.flatMap(unwrapOptionalLosslessStringConvertible(_:))
+                            self.\#(hostVariable.identifier.identifier.trimmed) = components.host.flatMap(unwrapOptionalLosslessStringConvertible(_:))
                         """#
                     } else {
                         initialiser += #"""
                             guard let host = components.host else { return nil }
                             do {
-                                self.\#(hostProperty.identifier.identifier.trimmed) = try unwrapLosslessStringConvertible(host)
+                                self.\#(hostVariable.identifier.identifier.trimmed) = try unwrapLosslessStringConvertible(host)
                             } catch {
                                 return nil
                             }
                         """#
                     }
                 } else {
-                    if hostProperty.isOptional {
+                    if hostVariable.isOptional {
                         initialiser += #"""
-                            guard self.\#(hostProperty.identifier.identifier.trimmed) == components.host.flatMap(unwrapOptionalLosslessStringConvertible(_:)) else { return nil }
+                            guard self.\#(hostVariable.identifier.identifier.trimmed) == components.host.flatMap(unwrapOptionalLosslessStringConvertible(_:)) else { return nil }
                         """#
                     } else {
                         initialiser += #"""
                             guard let host = components.host else { return nil }
                             do {
-                                guard try unwrapLosslessStringConvertible(host) == self.\#(hostProperty.identifier.identifier.trimmed) else { return nil }
+                                guard try unwrapLosslessStringConvertible(host) == self.\#(hostVariable.identifier.identifier.trimmed) else { return nil }
                             } catch {
                                 return nil
                             }
@@ -388,6 +435,36 @@ public struct DeepLink: MemberMacro {
             } else {
                 initialiser += #"""
                     guard components.host == nil || components.host == "" else { return nil }
+                """#
+            }
+
+            if let portVariable = portVariables.first {
+                if portVariable.mustBeInitialised {
+                    if portVariable.isOptional {
+                        initialiser += #"""
+                            self.\#(portVariable.identifier.identifier.trimmed) = components.port
+                        """#
+                    } else {
+                        initialiser += #"""
+                            guard let port = components.port else { return nil }
+                            self.port = port
+                        """#
+                    }
+                } else {
+                    if portVariable.isOptional {
+                        initialiser += #"""
+                            guard self.\#(portVariable.identifier.identifier.trimmed) == components.port else { return nil }
+                        """#
+                    } else {
+                        initialiser += #"""
+                            guard let port = components.port else { return nil }
+                            guard port == self.\#(portVariable.identifier.identifier.trimmed) else { return nil }
+                        """#
+                    }
+                }
+            } else {
+                initialiser += #"""
+                    guard components.port == nil  else { return nil }
                 """#
             }
 
@@ -527,9 +604,34 @@ public struct DeepLink: MemberMacro {
 
                 for (index, queryItemsVariable) in queryItemsVariables.enumerated() {
                     if index == 0 {
-                        initialiser += #"""
-                            self.\#(queryItemsVariable.identifier.identifier.trimmed.text) = queryItems
-                        """#
+                        if queryItemsVariable.typeAnnotation?.type.trimmed.description == "[URLQueryItem]" {
+                            initialiser += #"""
+                                self.\#(queryItemsVariable.identifier.identifier.trimmed.text) = queryItems
+                            """#
+                        } else if let type = queryItemsVariable.typeAnnotation?.type {
+                            if let queryItemsDictionaryType = type.as(DictionaryTypeSyntax.self) {
+                                if queryItemsDictionaryType.value.trimmed.description == "String?" {
+                                    initialiser += #"""
+                                        self.\#(queryItemsVariable.identifier.identifier.trimmed.text) = Dictionary<\#(queryItemsDictionaryType.key), String?>(
+                                            uniqueKeysWithValues: queryItems.map { queryItem -> (\#(queryItemsDictionaryType.key), String?) in
+                                                (
+                                                    \#(queryItemsDictionaryType.key)(rawValue: queryItem.name),
+                                                    queryItem.value
+                                                )
+                                            }
+                                        )
+                                    """#
+                                } else {
+                                    didGenerateValidInit = false
+                                    let error = ErrorDiagnosticMessage(id: "unsupported-query-items-value-type", message: "@QueryItems macro can only be applied to a [URLQueryItem] type, or a dictionary with the String? value type, not \(queryItemsDictionaryType.value.trimmed.description).")
+                                    context.addDiagnostics(from: error, node: queryItemsVariable.identifier)
+                                }
+                            } else {
+                                didGenerateValidInit = false
+                                let error = ErrorDiagnosticMessage(id: "unsupported-query-items-type", message: "@QueryItems macro can only be applied to a [URLQueryItem] type, or a dictionary.")
+                                context.addDiagnostics(from: error, node: queryItemsVariable.identifier)
+                            }
+                        }
                     } else {
                         didGenerateValidInit = false
                         let error = ErrorDiagnosticMessage(id: "unsupported-query-items", message: "Only one @QueryItems macro is supported when generating `init(url:)`")

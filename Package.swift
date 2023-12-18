@@ -152,5 +152,24 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
+
+        .target(
+            name: "VNCDeepLink",
+            dependencies: ["DeepLink"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .testTarget(
+            name: "VNCDeepLinkTests",
+            dependencies: [
+                "DeepLinkTestSupport",
+                "VNCDeepLink",
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+
     ]
 )

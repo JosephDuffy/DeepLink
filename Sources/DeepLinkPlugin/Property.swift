@@ -73,6 +73,14 @@ struct Property {
         return false
     }
 
+    var defaultValue: ExprSyntax? {
+        if let initializer = binding.initializer {
+            return initializer.value
+        }
+
+        return nil
+    }
+
     /// When `true` the property requires a value to be set during the
     /// initialisation of the type containing the property.
     var mustBeInitialised: Bool {

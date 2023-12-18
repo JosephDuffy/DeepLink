@@ -8,6 +8,7 @@ struct DeepLinkPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         DeepLink.self,
         Host.self,
+        Port.self,
         PathItem.self,
         QueryItem.self,
         QueryItems.self,

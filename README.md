@@ -35,6 +35,7 @@ deepLink.query // "still up"
 - Mail
 - Overcast
 - Settings ([in progress](https://github.com/JosephDuffy/DeepLink/pull/2 "PR adding support for the Settings app"))
+- VNC
 
 Want to add an app to the project? Please open a pull request or [submit an issue](https://github.com/JosephDuffy/DeepLink/issues/new?assignees=&labels=&projects=&template=new-app.yml)!
 
@@ -54,7 +55,6 @@ I currently class DeepLink as a beta package. I'm not aware of any issues with t
 
 Some things I would class as required for the 1.0:
 
-- `@Port`
 - `@Fragment`
 - More tests
 - Full documentation
